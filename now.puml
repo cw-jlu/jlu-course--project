@@ -1,0 +1,1062 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class Data_ManagerLXY {
+	+Data_ManagerLXY()
+	+~Data_ManagerLXY()
+	+isInitialized() : bool {query}
+	-convertFromVoidList(const std::list<void*>& voidData) : std::list<T>
+	+readData() : std::list<T>
+	-convertToVoidList(const std::list<T>& typedData) : std::list<void*>
+	-currentFactory : std::unique_ptr<IFactoryLXY>
+	-reader : std::unique_ptr<IReaderLXY>
+	-viewer : std::unique_ptr<IViewerLXY>
+	-writer : std::unique_ptr<IWriterLXY>
+	-managedMemory : std::vector<std::shared_ptr<void>>
+	-clearManagedMemory() : void
+	+readAndShow() : void
+	+setFactory(std::unique_ptr<IFactoryLXY> factory) : void
+	+setMainFactory() : void
+	+setQQFactory() : void
+	+setWeChatFactory() : void
+	+setWeiBoFactory() : void
+	+showData(const std::list<T>& data) : void
+	+writeData(const std::list<T>& data) : void
+}
+
+
+class Friends_Data_ManagerLXY {
+	+isfriend(int id1, int id2) : bool
+	+search_same(int id1, int id2) : int
+	+showandgetfriends(int id) : std::list<Friend_ShipLXY>&
+	-friendslist : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+getfriends(int id) : std::list<std::shared_ptr<Friend_ShipLXY>>
+	-friendstools : std::unique_ptr<Friends_Data_ToolsLXY>
+	-friendsfactory : std::unique_ptr<Friends_Factory>
+	+addfriends(int id1, int id2) : void
+	+deletefriends(int id1, int id2) : void
+	+setFactory(std::unique_ptr<Friends_Factory> factory) : void
+	+setMainPlatform() : void
+	+setQQPlatform() : void
+	+setWeChatPlatform() : void
+	+setWeiBoPlatform() : void
+	+showfriends(int id) : void
+	+write_back() : void
+}
+
+
+abstract class Friends_Data_ToolsLXY {
+	+{abstract} get_friend_list() : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+{abstract} write_friend_list(std::list<std::shared_ptr<Friend_ShipLXY>> &) : void
+}
+
+
+abstract class Friends_Factory {
+	+{abstract} GetTools() : std::unique_ptr<Friends_Data_ToolsLXY>
+}
+
+
+class GenericFactoryLXY <template<typename T, typename ReaderT, typename WriterT, typename ViewerT>> {
+	+createReader() : std::unique_ptr<IReaderLXY>
+	+createViewer() : std::unique_ptr<IViewerLXY>
+	+createWriter() : std::unique_ptr<IWriterLXY>
+}
+
+
+class GroupLXY {
+	+GroupLXY(const GroupInfoLXY& info)
+	-groupifo : GroupInfoLXY
+	+getgroupifo() : GroupInfoLXY&
+	+addmember(int memberid, GroupRole role) : bool
+	+deletemember(int memberid, int requesterId) : bool
+	+ismember(int memberid) : bool
+	+getmembercount() : int
+	+showcreatorid() : int
+	+showgroupid() : int
+	+showallmembersifo() : std::list<GroupMemberLXY>
+	+showgroupname() : std::string
+	+showallmembers() : void
+}
+
+
+abstract class Group_FactoryLXY {
+	+{abstract} createReader() : std::unique_ptr<Group_ReaderLXY>
+	+{abstract} createWriter() : std::unique_ptr<Group_WriterLXY>
+}
+
+
+class Group_ManagerLXY {
+	+addmember(int groupId, int memberId, GroupRole role) : bool
+	+creategroup(int creatorId, const std::string& groupName) : bool
+	+deletegroup(int groupId, int requesterId) : bool
+	+deletemember(int groupId, int memberId, int requesterId) : bool
+	+ismember(int groupId, int memberId) : bool
+	+getgroups(int id) : std::list<std::shared_ptr<GroupLXY>>
+	-groupslist : std::list<std::shared_ptr<GroupLXY>>
+	+creategroupforsongroup(int creatorId, const std::string& groupName) : std::shared_ptr<GroupLXY>
+	-groupfactory : std::unique_ptr<Group_FactoryLXY>
+	-groupreader : std::unique_ptr<Group_ReaderLXY>
+	-groupwriter : std::unique_ptr<Group_WriterLXY>
+	+setFactory(std::unique_ptr<Group_FactoryLXY> factory) : void
+	+setMainPlatform() : void
+	+setQQPlatform() : void
+	+setWeChatPlatform() : void
+	+setWeiBoPlatform() : void
+	+showgroupmembers(int groupId) : void
+	+write_back() : void
+}
+
+
+abstract class Group_ReaderLXY {
+	+{abstract} readTyped() : std::list<GroupInfoLXY>
+}
+
+
+abstract class Group_WriterLXY {
+	+{abstract} writeTyped(const std::list<std::shared_ptr<GroupInfoLXY>>& data) : void
+}
+
+
+abstract class IFactoryLXY {
+	+~IFactoryLXY()
+	+{abstract} createReader() : std::unique_ptr<IReaderLXY>
+	+{abstract} createViewer() : std::unique_ptr<IViewerLXY>
+	+{abstract} createWriter() : std::unique_ptr<IWriterLXY>
+}
+
+
+abstract class IReaderLXY {
+	+~IReaderLXY()
+	+{abstract} read() : std::list<void*>
+}
+
+
+abstract class IViewerLXY {
+	+~IViewerLXY()
+	+{abstract} show(const std::list<void*> &) : void
+}
+
+
+abstract class IWriterLXY {
+	+~IWriterLXY()
+	+{abstract} write(const std::list<void*> &) : void
+}
+
+
+class MainReaderLXY {
+	+readTyped() : std::list<MainaccountIfoLXY>
+}
+
+
+class MainViewerLXY {
+	+showTyped(const std::list<MainaccountIfoLXY>& data) : void
+}
+
+
+class MainWriterLXY {
+	+writeTyped(const std::list<MainaccountIfoLXY>& data) : void
+}
+
+
+class Main_FactoryLXY {
+	+set_signing_platform() : std::unique_ptr<Signing_PlatformLXY>
+}
+
+
+class Main_Friends_Factory {
+	+GetTools() : std::unique_ptr<Friends_Data_ToolsLXY>
+}
+
+
+class Main_Friends_ToolsLXY {
+	+get_friend_list() : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+write_friend_list(std::list<std::shared_ptr<Friend_ShipLXY>> &) : void
+}
+
+
+class Main_Group_FactoryLXY {
+	+createReader() : std::unique_ptr<Group_ReaderLXY>
+	+createWriter() : std::unique_ptr<Group_WriterLXY>
+}
+
+
+class Main_Group_ReaderLXY {
+	+readTyped() : std::list<GroupInfoLXY>
+}
+
+
+class Main_Group_WriterLXY {
+	+writeTyped(const std::list<std::shared_ptr<GroupInfoLXY>>& data) : void
+}
+
+
+class Main_PlatformLXY {
+	+Main_PlatformLXY()
+	+Main_Signin(int id) : LoginStatus
+	+Main_Signup() : LoginStatus
+	+addGroup(int groupId, int memberId) : bool
+	+inviteToGroup(int groupId, int memberId, int inviterId) : bool
+	+Mainsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+QQsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+WeChatsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+WeiBosigninchecking(int id) : std::shared_ptr<UserLXY>
+	-mainusermanager : std::unique_ptr<User_ManagerLXY>
+	+QQbinding(UserLXY& user) : void
+	+WeChatbinding(UserLXY& user) : void
+	+WeiBobinding(UserLXY& user) : void
+	+addfriend(int id1, int id2) : void
+	+createsongroup(int id1, int groupid) : void
+	+show_all_user() : void
+	+showoneuserbyid(int id) : void
+	+writealluserifo() : void
+}
+
+
+class Main_SigningLXY {
+	+sign_in() : int
+	+sign_in(int id) : int
+	+sign_in_for_binding(int id) : int
+	+sign_up() : int
+}
+
+
+abstract class PlatformLXY {
+	+PlatformLXY()
+	+Main_Signin(int id) : LoginStatus
+	+Main_Signup() : LoginStatus
+	+Signin(int id) : LoginStatus
+	+Signup() : LoginStatus
+	+{abstract} addGroup(int groupId, int memberId) : bool
+	+createGroup(int creatorId, const std::string& groupName) : bool
+	+deleteFriendInGroup(int groupId, int memberId, int requesterId) : bool
+	+deleteGroup(int groupId, int requesterId) : bool
+	+exitGroup(int groupId, int memberId) : bool
+	+{abstract} inviteToGroup(int groupId, int memberId, int inviterId) : bool
+	+getfriendsid(int num, int id1) : int
+	+getgroupsid(int num, int id1) : int
+	+showfriends(int id) : int
+	+showgroups(int id) : int
+	+getGroupMembers(int groupId) : std::list<GroupMemberLXY>
+	#friendslist : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+getMyGroups(int userId) : std::list<std::shared_ptr<GroupInfoLXY>> {query}
+	#grouplist : std::list<std::shared_ptr<GroupLXY>>
+	#datamanager : std::shared_ptr<Data_ManagerLXY>
+	#friendsdatamanager : std::shared_ptr<Friends_Data_ManagerLXY>
+	+creategroupforsongroup(int createID, const std::string& groupName) : std::shared_ptr<GroupLXY>
+	#groupmanager : std::shared_ptr<Group_ManagerLXY>
+	#platformusermanager : std::shared_ptr<Platform_User_ManagerLXY>
+	+Mainsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+QQsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+WeChatsigninchecking(int id) : std::shared_ptr<UserLXY>
+	+WeiBosigninchecking(int id) : std::shared_ptr<UserLXY>
+	+QQbinding(UserLXY& user) : void
+	+WeChatbinding(UserLXY& user) : void
+	+WeiBobinding(UserLXY& user) : void
+	+addfriend(int id1, int id2) : void
+	+createsongroup(int id1, int groupid) : void
+	+deletefriend(int id1, int id2) : void
+	+getfriends(int id) : void
+	+getgroups(int id) : void
+	+show_all_user() : void
+	+showoneuserbyid(int id) : void
+	+writealluserifo() : void
+}
+
+
+abstract class Platform_UserLXY {
+	+~Platform_UserLXY()
+	+{abstract} showid() : int
+	+addfriend() : void
+	+addgroup() : void
+	+deletefriend() : void
+	+deletegroup() : void
+	+showIfo() : void
+	+showgroup() : void
+}
+
+
+class Platform_User_ManagerLXY {
+	-datamanager : Data_ManagerLXY
+	+Signin(int id) : LoginStatus
+	+Signup() : LoginStatus
+	-signingmanager : Signing_ManagerLXY
+	+searchifidlegal(int id) : bool
+	-Platform_Userlist : std::list<std::unique_ptr<Platform_UserLXY>>
+	-currentfactory : std::unique_ptr<User_FactoryLXY>
+	+setQQfactory() : void
+	+setWeChatfactory() : void
+	+setWeiBofactory() : void
+	+setfactory(std::unique_ptr<User_FactoryLXY> factory) : void
+	+show_all_user() : void
+}
+
+
+class QQReaderLXY {
+	+readTyped() : std::list<QQaccountIfoLXY>
+}
+
+
+class QQViewerLXY {
+	+showTyped(const std::list<QQaccountIfoLXY>& data) : void
+}
+
+
+class QQWriterLXY {
+	+writeTyped(const std::list<QQaccountIfoLXY>& data) : void
+}
+
+
+class QQ_FactoryLXY {
+	+set_signing_platform() : std::unique_ptr<Signing_PlatformLXY>
+}
+
+
+class QQ_Friends_Factory {
+	+GetTools() : std::unique_ptr<Friends_Data_ToolsLXY>
+}
+
+
+class QQ_Friends_ToolsLXY {
+	+get_friend_list() : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+write_friend_list(std::list<std::shared_ptr<Friend_ShipLXY>> &) : void
+}
+
+
+class QQ_Group_FactoryLXY {
+	+createReader() : std::unique_ptr<Group_ReaderLXY>
+	+createWriter() : std::unique_ptr<Group_WriterLXY>
+}
+
+
+class QQ_Group_ReaderLXY {
+	+readTyped() : std::list<GroupInfoLXY>
+}
+
+
+class QQ_Group_WriterLXY {
+	+writeTyped(const std::list<std::shared_ptr<GroupInfoLXY>>& data) : void
+}
+
+
+class QQ_PlatformLXY {
+	+QQ_PlatformLXY()
+	+addGroup(int groupId, int memberId) : bool
+	+inviteToGroup(int groupId, int memberId, int inviterId) : bool
+	+createsongroup(int id1, int groupid) : void
+}
+
+
+class QQ_SigningLXY {
+	+sign_in() : int
+	+sign_in(int id) : int
+	+sign_in_for_binding(int id) : int
+	+sign_up() : int
+}
+
+
+class QQ_UserLXY {
+	+QQ_UserLXY(QQaccountIfoLXY& ifo)
+	-p : QQaccountIfoLXY
+	+showid() : int
+	+showIfo() : void
+}
+
+
+class QQ_User_FactoryLXY {
+	+create_Userlist() : std::list<std::unique_ptr<Platform_UserLXY>>
+}
+
+
+abstract class Signing_FactoryLXY {
+	+{abstract} set_signing_platform() : std::unique_ptr<Signing_PlatformLXY>
+}
+
+
+class Signing_ManagerLXY {
+	+Signing_ManagerLXY()
+	+~Signing_ManagerLXY()
+	+signIn() : LoginStatus
+	+signIn(int id) : LoginStatus
+	+signIn_for_binding(int id) : LoginStatus
+	+signUp() : LoginStatus
+	+isPlatformSet() : bool {query}
+	-currentFactory : std::unique_ptr<Signing_FactoryLXY>
+	-currentPlatform : std::unique_ptr<Signing_PlatformLXY>
+	+setMainPlatform() : void
+	+setPlatform(std::unique_ptr<Signing_FactoryLXY> factory) : void
+	+setQQPlatform() : void
+	+setWeChatPlatform() : void
+	+setWeiBoPlatform() : void
+}
+
+
+abstract class Signing_PlatformLXY {
+	+datamanager : Data_ManagerLXY
+	+{abstract} sign_in() : int
+	+{abstract} sign_in(int id) : int
+	+{abstract} sign_in_for_binding(int id) : int
+	+{abstract} sign_up() : int
+}
+
+
+class SystemLXY {
+	+SystemLXY()
+	+deletegroup(int groupid, int id, PlatformLXY& platform) : bool
+	-currentuser : std::shared_ptr<UserLXY>
+	-Mainplatform : std::unique_ptr<PlatformLXY>
+	-QQplatform : std::unique_ptr<PlatformLXY>
+	-WeChatplatform : std::unique_ptr<PlatformLXY>
+	-WeiBoplatform : std::unique_ptr<PlatformLXY>
+	+Mainfriends_recommend(PlatformLXY& currentplatform, int currentid) : void
+	+QQfriends_recommend(PlatformLXY& currentplatform, int currentid) : void
+	+WeChatfriends_recommend(PlatformLXY& currentplatform, int currentid) : void
+	+WeiBofriends_recommend(PlatformLXY& currentplatform, int currentid) : void
+	+addfriends(int id1, int id2, PlatformLXY& platform) : void
+	+addgroup(int id, PlatformLXY& platform) : void
+	+bindguide() : void
+	+creategroup(PlatformLXY& platform, int id) : void
+	+createsongroup(PlatformLXY& platform, int id1, int groupid) : void
+	+deletefriends() : void
+	+exitgroup(int groupid, int id, PlatformLXY& platform) : void
+	+friends_recommend(PlatformLXY& currentplatform, PlatformLXY& recommendplatform, int currentid, int recommendid) : void
+	+friendsguide() : void
+	+furfurtherfriendsguide(int id1, int id2, PlatformLXY& platform) : void
+	+furfurthergroupguide(int id1, int id2, PlatformLXY& platform) : void
+	+furtherfriendsguide(int id1, PlatformLXY& platform) : void
+	+furthergroupguide(int id1, PlatformLXY& platform) : void
+	+groupguide() : void
+	+mainguide() : void
+	+searchfriends() : void
+	+selfguide() : void
+	+showalluserfortest() : void
+	+signingguide() : void
+	+start() : void
+}
+
+
+abstract class TypedReaderLXY <template<typename T>> {
+	+{abstract} readTyped() : std::list<T>
+	+read() : std::list<void*>
+	-managedMemory : std::vector<std::shared_ptr<T>>
+	+clearManagedMemory() : void
+}
+
+
+abstract class TypedViewerLXY <template<typename T>> {
+	+show(const std::list<void*>& data) : void
+	+{abstract} showTyped(const std::list<T>& data) : void
+}
+
+
+abstract class TypedWriterLXY <template<typename T>> {
+	+write(const std::list<void*>& data) : void
+	+{abstract} writeTyped(const std::list<T>& data) : void
+}
+
+
+class UserLXY {
+	+UserLXY(MainaccountIfoLXY& a)
+	+~UserLXY()
+	-p : MainaccountIfoLXY
+	+getIfo() : MainaccountIfoLXY&
+	+if_QQ_binded() : int
+	+if_WeChat_binded() : int
+	+if_WeiBo_binded() : int
+	+showQQid() : int
+	+showWeChatid() : int
+	+showWeiBoid() : int
+	+showid() : int
+	+attachQQ(int id) : void
+	+attachWeChat(int id) : void
+	+attachWeiBo(int id) : void
+	+changeemail() : void
+	+changename() : void
+	+changepassword() : void
+	+changephonenumber() : void
+	+showIfo() : void
+}
+
+
+abstract class User_FactoryLXY {
+	#datamanager : Data_ManagerLXY
+	+{abstract} create_Userlist() : std::list<std::unique_ptr<Platform_UserLXY>>
+}
+
+
+class User_ManagerLXY {
+	+User_ManagerLXY()
+	-datamanager : Data_ManagerLXY
+	+Signin(int id) : LoginStatus
+	+Signup() : LoginStatus
+	-signingmanager : Signing_ManagerLXY
+	+searchifidlegal(int id) : bool
+	+attach_QQ(UserLXY& user) : int
+	+attach_WeChat(UserLXY& user) : int
+	+attach_WeiBo(UserLXY& user) : int
+	-Userlist : std::list<std::shared_ptr<UserLXY>>
+	+get_main_user_ifo(int id) : std::shared_ptr<UserLXY>
+	+get_main_user_ifo_by_QQ(int id) : std::shared_ptr<UserLXY>
+	+get_main_user_ifo_by_WeChat(int id) : std::shared_ptr<UserLXY>
+	+get_main_user_ifo_by_WeiBo(int id) : std::shared_ptr<UserLXY>
+	+addUser(std::unique_ptr<UserLXY> user) : void
+	+save_all_user() : void
+	+show_all_user() : void
+	+showoneuserbyid(int id) : void
+}
+
+
+class WeChatReaderLXY {
+	+readTyped() : std::list<WeChataccountIfoLXY>
+}
+
+
+class WeChatViewerLXY {
+	+showTyped(const std::list<WeChataccountIfoLXY>& data) : void
+}
+
+
+class WeChatWriterLXY {
+	+writeTyped(const std::list<WeChataccountIfoLXY>& data) : void
+}
+
+
+class WeChat_FactoryLXY {
+	+set_signing_platform() : std::unique_ptr<Signing_PlatformLXY>
+}
+
+
+class WeChat_Friends_Factory {
+	+GetTools() : std::unique_ptr<Friends_Data_ToolsLXY>
+}
+
+
+class WeChat_Friends_ToolsLXY {
+	+get_friend_list() : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+write_friend_list(std::list<std::shared_ptr<Friend_ShipLXY>> &) : void
+}
+
+
+class WeChat_Group_FactoryLXY {
+	+createReader() : std::unique_ptr<Group_ReaderLXY>
+	+createWriter() : std::unique_ptr<Group_WriterLXY>
+}
+
+
+class WeChat_Group_ReaderLXY {
+	+readTyped() : std::list<GroupInfoLXY>
+}
+
+
+class WeChat_Group_WriterLXY {
+	+writeTyped(const std::list<std::shared_ptr<GroupInfoLXY>>& data) : void
+}
+
+
+class WeChat_PlatformLXY {
+	+WeChat_PlatformLXY()
+	+addGroup(int groupId, int memberId) : bool
+	+inviteToGroup(int groupId, int memberId, int inviterId) : bool
+	+createsongroup(int id1, int groupid) : void
+}
+
+
+class WeChat_SigningLXY {
+	+sign_in() : int
+	+sign_in(int id) : int
+	+sign_in_for_binding(int id) : int
+	+sign_up() : int
+}
+
+
+class WeChat_UserLXY {
+	+WeChat_UserLXY(WeChataccountIfoLXY& ifo)
+	-p : WeChataccountIfoLXY
+	+showid() : int
+	+showIfo() : void
+}
+
+
+class WeChat_User_FactoryLXY {
+	+create_Userlist() : std::list<std::unique_ptr<Platform_UserLXY>>
+}
+
+
+class WeiBoReaderLXY {
+	+readTyped() : std::list<WeiBoaccountIfoLXY>
+}
+
+
+class WeiBoViewerLXY {
+	+showTyped(const std::list<WeiBoaccountIfoLXY>& data) : void
+}
+
+
+class WeiBoWriterLXY {
+	+writeTyped(const std::list<WeiBoaccountIfoLXY>& data) : void
+}
+
+
+class WeiBo_FactoryLXY {
+	+set_signing_platform() : std::unique_ptr<Signing_PlatformLXY>
+}
+
+
+class WeiBo_Friends_Factory {
+	+GetTools() : std::unique_ptr<Friends_Data_ToolsLXY>
+}
+
+
+class WeiBo_Friends_ToolsLXY {
+	+get_friend_list() : std::list<std::shared_ptr<Friend_ShipLXY>>
+	+write_friend_list(std::list<std::shared_ptr<Friend_ShipLXY>> &) : void
+}
+
+
+class WeiBo_Group_FactoryLXY {
+	+createReader() : std::unique_ptr<Group_ReaderLXY>
+	+createWriter() : std::unique_ptr<Group_WriterLXY>
+}
+
+
+class WeiBo_Group_ReaderLXY {
+	+readTyped() : std::list<GroupInfoLXY>
+}
+
+
+class WeiBo_Group_WriterLXY {
+	+writeTyped(const std::list<std::shared_ptr<GroupInfoLXY>>& data) : void
+}
+
+
+class WeiBo_PlatformLXY {
+	+WeiBo_PlatformLXY()
+	+addGroup(int groupId, int memberId) : bool
+	+inviteToGroup(int groupId, int memberId, int inviterId) : bool
+	+createsongroup(int id1, int groupid) : void
+}
+
+
+class WeiBo_SigningLXY {
+	+sign_in() : int
+	+sign_in(int id) : int
+	+sign_in_for_binding(int id) : int
+	+sign_up() : int
+}
+
+
+class WeiBo_UserLXY {
+	+WeiBo_UserLXY(WeiBoaccountIfoLXY& ifo)
+	-p : WeiBoaccountIfoLXY
+	+showid() : int
+	+showIfo() : void
+}
+
+
+class WeiBo_User_FactoryLXY {
+	+create_Userlist() : std::list<std::unique_ptr<Platform_UserLXY>>
+}
+
+
+enum BindingStatus {
+	ACCOUNT_NOT_EXIST
+	FAILED
+	PLATFORM_ALREADY_BOUND
+	SUCCESS
+	USER_NOT_FOUND
+}
+
+
+enum GroupRole {
+	Admin
+	Member
+	Owner
+}
+
+
+enum LoginStatus {
+	ACCOUNT_NOT_EXIST
+	ALREADY_CONNECT
+	ALREADY_ONLINE
+	DATABASE_ERROR
+	ID_ALREADY_EXISTS
+	INVALID_INPUT
+	NOT_BOUND
+	NO_ACCOUNTS_REGISTERED
+	PASSWORD_ERROR
+	REGISTER_FAILED
+	REGISTER_SUCCESS
+	SUCCESS
+}
+
+
+enum PlatTag {
+	QQ
+	WeChat
+	WeiBo
+}
+
+
+class Friend_ShipLXY {
+	+Friend_ShipLXY(int i1, int i2)
+	+id1 : int
+	+id2 : int
+}
+
+
+class GroupInfoLXY {
+	+creatorId : int
+	+groupid : int
+	+members : std::list<GroupMemberLXY>
+	+groupname : std::string
+}
+
+
+class GroupMemberLXY {
+	+role : GroupRole
+	+groupid : int
+	+memberid : int
+}
+
+
+class MainaccountIfoLXY {
+	+ifonline : bool
+	+QQid : int
+	+WeChatid : int
+	+WeiBoid : int
+	+id : int
+	+phoneNumber : long long int
+	+Username : std::string
+	+address : std::string
+	+date : std::string
+	+email : std::string
+	+password : std::string
+}
+
+
+class QQaccountIfoLXY {
+	+ifconnect : bool
+	+ifonline : bool
+	+QQid : int
+	+QQpassword : std::string
+	+name : std::string
+}
+
+
+class WeChataccountIfoLXY {
+	+ifconnect : bool
+	+ifonline : bool
+	+WeChatid : int
+	+WeChatpassword : std::string
+	+name : std::string
+}
+
+
+class WeiBoaccountIfoLXY {
+	+ifconnect : bool
+	+ifonline : bool
+	+WeiBoid : int
+	+WeiBopassword : std::string
+	+name : std::string
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+Friends_Data_ToolsLXY <|-- Main_Friends_ToolsLXY
+
+
+Friends_Data_ToolsLXY <|-- QQ_Friends_ToolsLXY
+
+
+Friends_Data_ToolsLXY <|-- WeChat_Friends_ToolsLXY
+
+
+Friends_Data_ToolsLXY <|-- WeiBo_Friends_ToolsLXY
+
+
+Friends_Factory <|-- Main_Friends_Factory
+
+
+Friends_Factory <|-- QQ_Friends_Factory
+
+
+Friends_Factory <|-- WeChat_Friends_Factory
+
+
+Friends_Factory <|-- WeiBo_Friends_Factory
+
+
+Group_FactoryLXY <|-- Main_Group_FactoryLXY
+
+
+Group_FactoryLXY <|-- QQ_Group_FactoryLXY
+
+
+Group_FactoryLXY <|-- WeChat_Group_FactoryLXY
+
+
+Group_FactoryLXY <|-- WeiBo_Group_FactoryLXY
+
+
+Group_ReaderLXY <|-- Main_Group_ReaderLXY
+
+
+Group_ReaderLXY <|-- QQ_Group_ReaderLXY
+
+
+Group_ReaderLXY <|-- WeChat_Group_ReaderLXY
+
+
+Group_ReaderLXY <|-- WeiBo_Group_ReaderLXY
+
+
+Group_WriterLXY <|-- Main_Group_WriterLXY
+
+
+Group_WriterLXY <|-- QQ_Group_WriterLXY
+
+
+Group_WriterLXY <|-- WeChat_Group_WriterLXY
+
+
+Group_WriterLXY <|-- WeiBo_Group_WriterLXY
+
+
+IFactoryLXY <|-- GenericFactoryLXY
+
+
+IReaderLXY <|-- TypedReaderLXY
+
+
+IViewerLXY <|-- TypedViewerLXY
+
+
+IWriterLXY <|-- TypedWriterLXY
+
+
+PlatformLXY <|-- Main_PlatformLXY
+
+
+PlatformLXY <|-- QQ_PlatformLXY
+
+
+PlatformLXY <|-- WeChat_PlatformLXY
+
+
+PlatformLXY <|-- WeiBo_PlatformLXY
+
+
+Platform_UserLXY <|-- QQ_UserLXY
+
+
+Platform_UserLXY <|-- WeChat_UserLXY
+
+
+Platform_UserLXY <|-- WeiBo_UserLXY
+
+
+Signing_FactoryLXY <|-- Main_FactoryLXY
+
+
+Signing_FactoryLXY <|-- QQ_FactoryLXY
+
+
+Signing_FactoryLXY <|-- WeChat_FactoryLXY
+
+
+Signing_FactoryLXY <|-- WeiBo_FactoryLXY
+
+
+Signing_PlatformLXY <|-- Main_SigningLXY
+
+
+Signing_PlatformLXY <|-- QQ_SigningLXY
+
+
+Signing_PlatformLXY <|-- WeChat_SigningLXY
+
+
+Signing_PlatformLXY <|-- WeiBo_SigningLXY
+
+
+TypedReaderLXY <|-- MainReaderLXY
+
+
+TypedReaderLXY <|-- QQReaderLXY
+
+
+TypedReaderLXY <|-- WeChatReaderLXY
+
+
+TypedReaderLXY <|-- WeiBoReaderLXY
+
+
+TypedViewerLXY <|-- MainViewerLXY
+
+
+TypedViewerLXY <|-- QQViewerLXY
+
+
+TypedViewerLXY <|-- WeChatViewerLXY
+
+
+TypedViewerLXY <|-- WeiBoViewerLXY
+
+
+TypedWriterLXY <|-- MainWriterLXY
+
+
+TypedWriterLXY <|-- QQWriterLXY
+
+
+TypedWriterLXY <|-- WeChatWriterLXY
+
+
+TypedWriterLXY <|-- WeiBoWriterLXY
+
+
+User_FactoryLXY <|-- QQ_User_FactoryLXY
+
+
+User_FactoryLXY <|-- WeChat_User_FactoryLXY
+
+
+User_FactoryLXY <|-- WeiBo_User_FactoryLXY
+
+
+
+
+
+/' Aggregation relationships '/
+
+Data_ManagerLXY o-- IFactoryLXY
+
+
+Data_ManagerLXY o-- IReaderLXY
+
+
+Data_ManagerLXY o-- IViewerLXY
+
+
+Data_ManagerLXY o-- IWriterLXY
+
+
+Friends_Data_ManagerLXY o-- Friend_ShipLXY
+
+
+Friends_Data_ManagerLXY o-- Friends_Data_ToolsLXY
+
+
+Friends_Data_ManagerLXY o-- Friends_Factory
+
+
+GroupInfoLXY *-- GroupMemberLXY
+
+
+GroupLXY *-- GroupInfoLXY
+
+
+GroupMemberLXY *-- GroupRole
+
+
+Group_ManagerLXY o-- GroupLXY
+
+
+Group_ManagerLXY o-- Group_FactoryLXY
+
+
+Group_ManagerLXY o-- Group_ReaderLXY
+
+
+Group_ManagerLXY o-- Group_WriterLXY
+
+
+Main_PlatformLXY o-- User_ManagerLXY
+
+
+PlatformLXY o-- Data_ManagerLXY
+
+
+PlatformLXY o-- Friend_ShipLXY
+
+
+PlatformLXY o-- Friends_Data_ManagerLXY
+
+
+PlatformLXY o-- GroupLXY
+
+
+PlatformLXY o-- Group_ManagerLXY
+
+
+PlatformLXY o-- Platform_User_ManagerLXY
+
+
+Platform_User_ManagerLXY *-- Data_ManagerLXY
+
+
+Platform_User_ManagerLXY o-- Platform_UserLXY
+
+
+Platform_User_ManagerLXY *-- Signing_ManagerLXY
+
+
+Platform_User_ManagerLXY o-- User_FactoryLXY
+
+
+QQ_UserLXY *-- QQaccountIfoLXY
+
+
+Signing_ManagerLXY o-- Signing_FactoryLXY
+
+
+Signing_ManagerLXY o-- Signing_PlatformLXY
+
+
+Signing_PlatformLXY *-- Data_ManagerLXY
+
+
+SystemLXY "4" o-- PlatformLXY
+
+
+SystemLXY o-- UserLXY
+
+
+UserLXY *-- MainaccountIfoLXY
+
+
+User_FactoryLXY *-- Data_ManagerLXY
+
+
+User_ManagerLXY *-- Data_ManagerLXY
+
+
+User_ManagerLXY *-- Signing_ManagerLXY
+
+
+User_ManagerLXY o-- UserLXY
+
+
+WeChat_UserLXY *-- WeChataccountIfoLXY
+
+
+WeiBo_UserLXY *-- WeiBoaccountIfoLXY
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
